@@ -7,13 +7,11 @@
 }
 
 html {
-    overflow: hidden; /* Prevent body scrollbar, gallery will handle scrolling */
-    background-color: #e5e5f7;
+    overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
     html {
-        background-color: #1a1a2e;
         color: #e5e5f7;
     }
 }
