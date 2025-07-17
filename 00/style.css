@@ -18,6 +18,18 @@ body {
     font-size: 1.25rem;
 }
 
+a {
+  font-family: "VT323";
+  font-size: 1.25rem;
+  color: #1a1a2e;
+}
+
+@media (prefers-color-scheme: dark) {
+  a {
+    color: #e5e5f7;
+  }
+}
+
 #theme-aware-svg {
     filter: none;
 }
