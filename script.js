@@ -98,9 +98,6 @@ const observer = new IntersectionObserver((entries) => {
 
 // Function to dynamically create and add iframe cards to the gallery.
 async function populateGallery() {
-    // Display a loading message initially to inform the user that content is being fetched.
-    iframeGallery.innerHTML = '<div class="loading-message inconsolata">Loading canvases...</div>';
-
     // Call the 'detectFolders' helper function to get the list of available student folders.
     const availableFolders = await detectFolders();
     iframeGallery.innerHTML = ''; // Clear the loading message once folders are detected.

@@ -10,8 +10,13 @@ html {
     overflow: hidden;
 }
 
+body {
+    background: #e5e5f7;
+}
+
 @media (prefers-color-scheme: dark) {
-    html {
+    body {
+        background: #1a1a2e;
         color: #e5e5f7;
     }
 }
