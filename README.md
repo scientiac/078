@@ -12,3 +12,8 @@
 9. When everything is ready, send me a pull request.
 10. I'll merge your pull request if everything is correct and it will be live.
 
+> [!WARNING]
+> Views that scroll beyond the canvas size will be rejected.
+
+> [!IMPORTANT]
+> Make sure to check your canvas by resizing and on both light and dark mode. And also make sure all the links work.
