@@ -10,22 +10,30 @@ const nextBtn = document.getElementById('nextBtn');
 const currentNum = document.getElementById('currentNum');
 const pageTitle = document.getElementById('pageTitle'); // Get the new pageTitle element
 
-// Auto-detect folders by trying to load them
+// --- MODIFIED detectFolders function ---
+// Read folders from a text file
 async function detectFolders() {
-    const folders = ['00']; // Always include 00 as default
-    for (let i = 1; i <= 96; i++) {
-        const paddedNum = i.toString().padStart(2, '0');
-        try {
-            const response = await fetch(`${paddedNum}/index.html`, { method: 'HEAD' });
-            if (response.ok) {
-                folders.push(paddedNum);
-            }
-        } catch (e) {
-            // Folder doesn't exist, continue
+    try {
+        const response = await fetch('public-canvas.txt');
+        if (!response.ok) {
+            console.error('Failed to load public-canvas.txt:', response.statusText);
+            return ['00']; // Fallback to only '00' if file not found or error
         }
+        const text = await response.text();
+        // Split by comma, trim whitespace from each entry, and filter out empty strings
+        const folders = text.split(',').map(folder => folder.trim()).filter(folder => folder !== '');
+        // Ensure '00' is always included, even if not in the file, and make sure folders are unique
+        const uniqueFolders = [...new Set(['00', ...folders])];
+        // Optionally, sort the folders numerically for consistent navigation
+        uniqueFolders.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+        return uniqueFolders;
+    } catch (e) {
+        console.error('Error reading public-canvas.txt', e);
+        return ['00']; // Fallback in case of any error
     }
-    return folders;
 }
+// --- END MODIFIED detectFolders function ---
+
 
 // Load student canvas with animation
 function loadCanvas(folderNum, direction = 'next') {
