@@ -43,6 +43,7 @@ body, html {
 footer {
     text-align: center;
     padding: 20px;
+    padding-bottom: 40px;
     text-decoration: none; 
     z-index: 10;
 }
