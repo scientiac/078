@@ -1,14 +1,5 @@
-// Auto-detect available student folders
-let availableFolders = ['00']; // Start with 00 as default
-let currentIndex = 0; // Start at 00
-
 // DOM elements
-const canvasFrame = document.getElementById('canvasFrame');
-const pastelDiv = document.getElementById('pastelDiv'); // Get the pastelDiv
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const currentNum = document.getElementById('currentNum');
-const pageTitle = document.getElementById('pageTitle'); // Get the new pageTitle element
+const iframeGallery = document.getElementById('iframeGallery');
 
 // --- MODIFIED detectFolders function ---
 // Read folders from a text file
@@ -24,7 +15,7 @@ async function detectFolders() {
         const folders = text.split(',').map(folder => folder.trim()).filter(folder => folder !== '');
         // Ensure '00' is always included, even if not in the file, and make sure folders are unique
         const uniqueFolders = [...new Set(['00', ...folders])];
-        // Optionally, sort the folders numerically for consistent navigation
+        // Optionally, sort the folders numerically for consistent display
         uniqueFolders.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
         return uniqueFolders;
     } catch (e) {
@@ -34,130 +25,59 @@ async function detectFolders() {
 }
 // --- END MODIFIED detectFolders function ---
 
+// Function to dynamically create and add iframe cards to the gallery
+async function populateGallery() {
+    // Show loading message initially
+    iframeGallery.innerHTML = '<div class="loading-message inconsolata">Loading canvases...</div>';
 
-// Load student canvas with animation
-function loadCanvas(folderNum, direction = 'next') {
-    // Determine the slide-out and slide-in classes for the container
-    const slideOutClass = direction === 'next' ? 'slide-out-left-container' : 'slide-out-right-container';
-    const slideInClass = direction === 'next' ? 'slide-in-right-container' : 'slide-in-left-container';
+    const availableFolders = await detectFolders();
+    iframeGallery.innerHTML = ''; // Clear loading message
 
-    // Apply slide-out animation to the container
-    pastelDiv.classList.remove('slide-in-left-container', 'slide-in-right-container'); // Clear previous
-    pastelDiv.classList.add(slideOutClass);
+    if (availableFolders.length === 0) {
+        iframeGallery.innerHTML = '<div class="loading-message inconsolata">No canvases found.</div>';
+        return;
+    }
 
-    // After the slide-out animation completes, change the src and slide in the new content
-    // Use a timeout that matches the CSS transition duration (0.5s)
-    setTimeout(() => {
-        canvasFrame.src = `${folderNum}/index.html`;
+    // Create an iframe card for each detected folder
+    availableFolders.forEach(folderNum => {
+        // Create the main card container for the iframe
+        const iframeCard = document.createElement('div');
+        iframeCard.classList.add('iframe-card');
+
+        // Create a div for the title of the iframe
+        const iframeTitle = document.createElement('div');
+        iframeTitle.classList.add('iframe-title', 'inconsolata');
+        iframeTitle.textContent = `Canvas ${folderNum}`; // Default title
+
+        // Create the iframe element
+        const iframe = document.createElement('iframe');
+        iframe.src = `${folderNum}/index.html`;
+        iframe.setAttribute('loading', 'lazy'); // Optimize loading for off-screen iframes
 
         // Listen for the iframe to load to get its title
-        canvasFrame.onload = () => {
+        iframe.onload = () => {
             try {
-                const iframeDoc = canvasFrame.contentDocument || canvasFrame.contentWindow.document;
-                pageTitle.textContent = iframeDoc.title || `Canvas ${folderNum}`; // Set title, fallback if not found
+                // Attempt to access the iframe's contentDocument to get its title
+                // This might be blocked by CORS if the iframe content is from a different origin
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc && iframeDoc.title) {
+                    iframeTitle.textContent = iframeDoc.title;
+                }
             } catch (e) {
-                console.error("Could not access iframe content:", e);
-                pageTitle.textContent = `Canvas ${folderNum}`; // Fallback title
-            } finally {
-                // Remove slide-out class and apply slide-in animation to the container
-                pastelDiv.classList.remove(slideOutClass);
-                pastelDiv.classList.add(slideInClass);
-
-                // After slide-in animation, remove the slide-in class
-                pastelDiv.addEventListener('transitionend', function handler() {
-                    pastelDiv.classList.remove(slideInClass);
-                    pastelDiv.removeEventListener('transitionend', handler);
-                }, { once: true }); // Use { once: true } to automatically remove the listener
+                // Log CORS or other access errors, but don't break the page
+                console.warn(`Could not access iframe content for folder ${folderNum}:`, e);
+                // Keep the default title if access is denied
             }
         };
-    }, 500); // Match CSS transition duration
 
-    currentIndex = availableFolders.indexOf(folderNum);
-    updateNavigation();
+        // Append the title and iframe to the card
+        iframeCard.appendChild(iframeTitle);
+        iframeCard.appendChild(iframe);
+
+        // Append the card to the gallery container
+        iframeGallery.appendChild(iframeCard);
+    });
 }
 
-// Show default view (00 page)
-function showDefault() {
-    loadCanvas('00', 'next'); // Treat default as a normal load
-    // The pageTitle will be set by the iframe's onload handler
-}
-
-// Update navigation buttons and input
-function updateNavigation() {
-    currentNum.value = availableFolders[currentIndex];
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === availableFolders.length - 1;
-}
-
-// Navigate to previous
-function navigatePrev() {
-    if (currentIndex > 0) {
-        const newFolder = availableFolders[currentIndex - 1];
-        loadCanvas(newFolder, 'prev');
-    }
-}
-
-// Navigate to next
-function navigateNext() {
-    if (currentIndex < availableFolders.length - 1) {
-        const newFolder = availableFolders[currentIndex + 1];
-        loadCanvas(newFolder, 'next');
-    }
-}
-
-// Navigate to specific folder
-function navigateToFolder(folderNum) {
-    if (availableFolders.includes(folderNum)) {
-        // Determine direction for animation based on current and target index
-        const targetIndex = availableFolders.indexOf(folderNum);
-        const direction = targetIndex > currentIndex ? 'next' : 'prev';
-        loadCanvas(folderNum, direction);
-    } else {
-        // If folder doesn't exist, go back to current valid folder
-        currentNum.value = availableFolders[currentIndex];
-    }
-}
-
-// Event listeners
-prevBtn.addEventListener('click', navigatePrev);
-nextBtn.addEventListener('click', navigateNext);
-
-// Input field handling
-currentNum.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const inputValue = e.target.value.padStart(2, '0');
-        navigateToFolder(inputValue);
-    }
-});
-
-// Only allow numbers in input
-currentNum.addEventListener('input', (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-    if (e.target.value.length > 2) {
-        e.target.value = e.target.value.slice(0, 2);
-    }
-});
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') navigatePrev();
-    if (e.key === 'ArrowRight') navigateNext();
-    if (e.key === 'Home') {
-        e.preventDefault(); // Prevent default browser behavior (e.g., scrolling to top)
-        showDefault();
-    }
-});
-
-// Initialize
-(async () => {
-    availableFolders = await detectFolders();
-    // Ensure currentIndex is valid if 00 is not the first detected folder
-    if (availableFolders.includes('00')) {
-        currentIndex = availableFolders.indexOf('00');
-    } else {
-        currentIndex = 0; // Default to the first available folder if 00 isn't found
-    }
-    updateNavigation();
-    showDefault(); // Load the default (00) page initially
-    console.log('Detected folders:', availableFolders);
-})();
+// Initialize the gallery on page load
+window.onload = populateGallery;

@@ -7,15 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="pastelDiv" class="page">
-        <iframe id="canvasFrame" src=""></iframe>
-    </div>
-    
-    <div class="nav-controls">
-        <button id="prevBtn">‹</button>
-        <input type="text" id="currentNum" value="00" maxlength="2">
-        <button id="nextBtn">›</button>
-        <div id="pageTitle"></div>
+    <!-- Main container for the scrollable gallery of iframes -->
+    <div id="iframeGallery">
+        <!-- Iframes will be dynamically added here by script.js -->
+        <div class="loading-message">Loading canvases...</div>
     </div>
     
     <script src="script.js"></script>

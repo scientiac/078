@@ -1,16 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-.inconsolata-<uniquifier> {
-  font-family: "Inconsolata", monospace;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
+.vt323-regular {
+  font-family: "VT323", monospace;
+  font-weight: 400;
   font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
 }
 
 html {
-    overflow: hidden;
+    overflow: hidden; /* Prevent body scrollbar, gallery will handle scrolling */
     background-color: #e5e5f7;
 }
 
@@ -26,135 +23,107 @@ body {
     display: flex;
     flex-direction: column; 
     align-items: center;
-    overflow: hidden;
+    /* Remove padding to make gallery fill the viewport */
+    overflow: hidden; /* Controlled by #iframeGallery */
     margin: 0;
     height: 100vh;
-    padding-top: 1rem;
     position: relative;
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
-#pastelDiv {
-    position: relative;
-    height: calc(100% - 6rem); 
-    width: calc(100% - 2rem);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.625rem 1.25rem rgba(0, 0, 0, 0.19), 0 0.375rem 0.375rem rgba(0, 0, 0, 0.23);
-    overflow: hidden;
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
-#pastelDiv.slide-out-left-container {
-    opacity: 0;
-}
-
-#pastelDiv.slide-out-right-container {
-    opacity: 0;
-}
-
-#pastelDiv.slide-in-left-container {
-    opacity: 1;
-}
-
-#pastelDiv.slide-in-right-container {
-    opacity: 1;
-}
-
-
-#canvasFrame {
+/* Styles for the main gallery container */
+#iframeGallery {
+    display: block; /* Stack iframes vertically */
+    /* Remove gap, padding, background, and shadow for seamless look */
+    gap: 0;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    overflow-y: auto; /* Enable vertical scrolling */
     width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 0.5rem;
+    height: 100%; /* Take full height of the body */
+    box-sizing: border-box;
+}
+
+/* Styles for each individual iframe card (now acting as a container for each full-width iframe) */
+.iframe-card {
+    background-color: transparent; /* No background for cards */
+    border-radius: 0; /* No rounded corners */
+    box-shadow: none; /* No shadow */
+    overflow: hidden; /* Keep overflow hidden to prevent internal scrollbars if iframe content is larger than its set height */
+    transition: none; /* No transitions/hover effects */
+    display: block; /* Ensure it takes full width and stacks */
+    padding: 0; /* No padding inside the card */
+    box-sizing: border-box;
+
+    width: 100%; /* Take full width of the gallery container */
+    /* Each iframe card will take 100% of the viewport height */
+    height: 100vh; 
+    margin-bottom: 0; /* Ensure no vertical gaps between cards */
+}
+
+/* Remove hover effects as they no longer fit the seamless design */
+.iframe-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Styles for the iframe itself */
+.iframe-card iframe {
+    width: 100%;
+    height: 100%; /* Fill the height of its parent card (100vh) */
+    border: none; /* No borders */
+    border-radius: 0; /* No rounded corners */
+    background-color: #f0f0f0; /* Placeholder background, can be transparent if preferred */
     display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
-.nav-controls {
-    position: fixed;
-    bottom: 0;  
-    left: 0;
-    width: calc(100% - 2rem);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem;
-}
-
-
-.nav-controls button {
-    background: rgba(255, 255, 255, 0.0);
-    color: #1a1a2e;
-    border: none;
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    cursor: pointer;
-    font-size: 1.125rem;
-    font-weight: bold;
-}
-
+/* Dark mode adjustment for iframe background */
 @media (prefers-color-scheme: dark) {
-  .nav-controls button {
-      background: rgba(255, 255, 255, 0.0);
-      color: #e5e5f7;
-      border: none;
-  }
+    .iframe-card iframe {
+        background-color: #3b3b52;
+    }
 }
 
-.nav-controls button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+/* Styles for the title above each iframe - now hidden */
+.iframe-card .iframe-title {
+    display: none; /* Completely hide the title */
 }
 
-#currentNum {
-    background: rgba(255, 255, 255, 0.3);
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    min-width: 0.1rem;
+/* Loading message style */
+.loading-message {
+    font-size: 1.5rem;
+    color: #666;
     text-align: center;
-    transition: all 0.3s ease;
-    font-family: inconsolata;
+    margin-top: 50px;
+    font-family: 'VT323', monospace;
 }
 
 @media (prefers-color-scheme: dark) {
-  #currentNum {
-      background: rgba(255, 255, 255, 0.0);
-      color: #e5e5f7;
-      border: none;
-  }
+    .loading-message {
+        color: #bbb;
+    }
 }
 
-#currentNum:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 0 0.125rem rgba(247, 156, 172, 0.5);
-}
-
-#pageTitle {
-    flex-grow: 1; 
-    text-align: right;
-    font-weight: bold;
-    padding: 0 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: unset;
-    font-family: inconsolata;
-}
-
-.page {
-    animation: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
+/* Responsive adjustments for smaller screens - simplified as most elements are now 100% width */
 @media (max-width: 768px) {
-    #pastelDiv {
-        height: calc(100% - 6rem);
-        width: calc(100% - 2rem);
+    body {
+        padding: 0; /* Ensure no padding on body */
     }
 
-    #pageTitle {
-       display: none;
+    #iframeGallery {
+        padding: 0; /* Ensure no padding on gallery */
+    }
+
+    .iframe-card {
+        height: 100vh; /* Maintain full viewport height on mobile */
+        padding: 0; /* No padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .iframe-card {
+        height: 100vh; /* Maintain full viewport height on very small screens */
     }
 }
