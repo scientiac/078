@@ -1,3 +1,87 @@
-* {
-  background-color: #1af1fa
+body, html {
+    height: 100dvh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Fantasque Sans Mono', sans-serif;
+    color: #f0f0f0;
+    background-color: #0f0f0f;
+}
+
+@media (prefers-color-scheme: light) {
+    body, html {
+      background-color: #f0f0f0;
+      color: #0f0f0f;
+    }
+}
+
+.centered {
+    font-family: "Mr Dafoe", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 3rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.centered p {
+    display: block;
+    position: absolute;
+    bottom: 51%;
+    margin: 0;
+}
+
+.main {
+    font-size: 1rem;
+    font-family: 'Fantasque Sans Mono', sans-serif;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    text-decoration: none; 
+    z-index: 10;
+}
+
+a {
+    color: #f0f0f0;
+    text-decoration: none; 
+}
+
+@media (prefers-color-scheme: light) {
+    a {
+	   color: #0f0f0f;
+    }
+    .pi-circle {
+        stroke: #000;
+    }
+}
+
+.emoji {
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 2s ease;
+}
+
+.scrapbook-image {
+  position: fixed;
+  z-index: 2;
+  transform-origin: center;
+  padding: 5px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.scrapbook-image img {
+  width: 80px;
+  height: auto;
+  display: block;
 }
