@@ -1,5 +1,7 @@
 # BCT 2078 Collaborative Canvas
 
+[The Canvas](https://scientiac.space/078)
+
 ## To add your art.
 1. Fork this repo and clone it to your system.
 2. On the index/root directory/folder, run the `live-server`.
@@ -16,4 +18,7 @@
 > Views that scroll beyond the canvas size will be rejected.
 
 > [!IMPORTANT]
-> Make sure to check your canvas by resizing and on both light and dark mode. And also make sure all the links work.
+> Make sure to check your canvas in different sized screens and on both light and dark mode(subjective).
+> Make sure all the links work.
+> Remove unnecessary temporary files or add them to .gitignore.
+
