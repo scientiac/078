@@ -20,9 +20,8 @@ body, html {
     font-style: normal;
     font-size: 1.5rem;
     top: 2rem;
-    right: 1rem;
     z-index: 100;
-    text-align: left;
+    text-align: center;
     a {
       padding: 5px;
       border: 2px solid;
