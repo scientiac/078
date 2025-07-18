@@ -16,16 +16,20 @@ body, html {
 }
 
 .centered {
-    font-family: "Mr Dafoe", cursive;
     font-weight: 400;
     font-style: normal;
-    font-size: 3rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    font-size: 1.5rem;
+    top: 2rem;
+    right: 1rem;
+    z-index: 100;
+    text-align: left;
+    a {
+      padding: 5px;
+      border: 2px solid;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-left-width: 25px;
+    }
 }
 
 .centered p {
@@ -78,7 +82,6 @@ a {
   border: 2px solid #fff;
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
 }
 
 .scrapbook-image img {
