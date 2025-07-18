@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>I Am That</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+
+
+  <div id="particles"></div>
+
+  
+  <div class="cursor-trail" id="cursor-trail"></div>
+
+  <div class="center">
+    <h1 class="main-text">
+      I am <span id="name" class="fade-name">Rojan</span>
+    </h1>
+    <p id="quote" class="quote">Who am I?</p>
+    <button id="reveal">Contemplate</button>
+  </div>
+
+  <div class="footer">Rojan Adhikari • Engineer • Thinker</div>
+
+  <script>
+    
+    const quotes = [
+      "You are not the body. You are not the mind. You are pure awareness.",
+      "Neti Neti — not this, not that. Keep peeling away.",
+      "There is no other. The other is you.",
+      "Brahman alone is real, the world is illusion, and the self is none other than Brahman.",
+      "I am not in the world. The world is in me.",
+      "The seer, the seen, and the seeing are one.",
+      "Silence is the loudest truth.",
+      "What you are looking for is what is looking.",
+      "Drop the search. What you are, already is.",
+      "Tat Tvam Asi — That Thou Art.",
+      "Consciousness is the only reality. Everything else is just a dream.",
+      "The wave is not separate from the ocean.",
+      "In the absence of the 'I', what remains? Everything.",
+      "You are the space in which all experiences appear.",
+      "The ego is just a thought. You are the awareness of that thought."
+    ];
+
+    const quoteEl = document.getElementById('quote');
+    
+    document.getElementById('reveal').addEventListener('click', () => {
+      const random = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteEl.classList.add('updating');
+      
+      setTimeout(() => {
+        quoteEl.textContent = random;
+        quoteEl.classList.remove('updating');
+      }, 300);
+    });
+
+    
+    setTimeout(() => {
+      const nameEl = document.getElementById('name');
+      nameEl.classList.add('fade-out');
+
+      setTimeout(() => {
+        nameEl.textContent = 'Shiva';
+        nameEl.classList.remove('fade-out');
+        nameEl.classList.add('fade-in');
+      }, 800);
+    }, 3000);
+
+
+    function createParticles() {
+      const particleContainer = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        particleContainer.appendChild(particle);
+      }
+    }
+
+    
+    const cursorTrail = document.getElementById('cursor-trail');
+    let mouseX = 0, mouseY = 0;
+    let trailX = 0, trailY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateTrail() {
+      trailX += (mouseX - trailX) * 0.1;
+      trailY += (mouseY - trailY) * 0.1;
+      
+      cursorTrail.style.left = trailX + 'px';
+      cursorTrail.style.top = trailY + 'px';
+      
+      requestAnimationFrame(animateTrail);
+    }
+
+    
+    createParticles();
+    animateTrail();
+
+    
+    document.addEventListener('click', (e) => {
+      const sparkle = document.createElement('div');
+      sparkle.style.position = 'fixed';
+      sparkle.style.left = e.clientX + 'px';
+      sparkle.style.top = e.clientY + 'px';
+      sparkle.style.width = '10px';
+      sparkle.style.height = '10px';
+      sparkle.style.background = 'radial-gradient(circle, #fff, transparent)';
+      sparkle.style.borderRadius = '50%';
+      sparkle.style.pointerEvents = 'none';
+      sparkle.style.animation = 'sparkle 0.6s ease-out forwards';
+      sparkle.style.zIndex = '10000';
+      
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 600);
+    });
+
+    
+    const sparkleStyle = document.createElement('style');
+    sparkleStyle.textContent = `
+      @keyframes sparkle {
+        0% { transform: scale(0) rotate(0deg); opacity: 1; }
+        50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+        100% { transform: scale(0) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(sparkleStyle);
+  </script>
+</body>
+</html>
