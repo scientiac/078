@@ -102,8 +102,6 @@ body {
     margin-right: 10px;
 }
 
-
-
 .footer {
     text-align: center;
     margin-top: 50px;
@@ -129,16 +127,371 @@ body {
     text-shadow: 0 0 10px #00ccff;
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   COMPREHENSIVE RESPONSIVE MEDIA QUERIES
+   ============================================ */
+
+/* Small Mobile Phones (320px - 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 10px;
+        max-width: 100%;
+    }
+    
+    .glitch {
+        font-size: 1.8rem;
+        line-height: 1.2;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+        white-space: normal;
+        border-right: none;
+        animation: none;
+    }
+    
+    .terminal {
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 5px;
+    }
+    
+    .terminal::before {
+        font-size: 0.6rem;
+        top: -12px;
+        left: 10px;
+    }
+    
+    .terminal-header {
+        font-size: 0.9rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .terminal-header::before {
+        content: "root@kali:~$";
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .social-links a {
+        margin: 0 8px;
+        font-size: 1rem;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    
+    .footer {
+        padding: 15px 10px;
+        margin-top: 30px;
+    }
+}
+
+/* Large Mobile Phones (481px - 600px) */
+@media screen and (min-width: 481px) and (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .glitch {
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .terminal {
+        padding: 18px;
+        margin: 18px 0;
+    }
+    
+    .terminal-header {
+        font-size: 1rem;
+    }
+    
+    .social-links a {
+        margin: 0 12px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Small Tablets (601px - 768px) */
+@media screen and (min-width: 601px) and (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .glitch {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .terminal {
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .terminal-header {
+        font-size: 1.05rem;
+    }
+    
+    .social-links a {
+        margin: 0 15px;
+        font-size: 1.15rem;
+    }
+}
+
+/* Medium Tablets (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 25px;
+        max-width: 900px;
+    }
+    
+    .glitch {
+        font-size: 2.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1.15rem;
+    }
+    
+    .terminal {
+        padding: 22px;
+        margin: 22px 0;
+    }
+    
+    .terminal-header {
+        font-size: 1.08rem;
+    }
+    
+    .footer {
+        margin-top: 45px;
+    }
+}
+
+/* Large Tablets/Small Laptops (1025px - 1200px) */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+    .container {
+        padding: 30px;
+        max-width: 1000px;
+    }
+    
+    .glitch {
+        font-size: 2.9rem;
+    }
+    
+    .subtitle {
+        font-size: 1.18rem;
+    }
+    
+    .terminal {
+        padding: 25px;
+        margin: 25px 0;
+    }
+}
+
+/* Desktop/Laptop (1201px - 1440px) */
+@media screen and (min-width: 1201px) and (max-width: 1440px) {
+    .container {
+        padding: 35px;
+        max-width: 1200px;
+    }
+    
+    .glitch {
+        font-size: 3.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1.25rem;
+    }
+    
+    .terminal {
+        padding: 28px;
+        margin: 28px 0;
+    }
+    
+    .terminal-header {
+        font-size: 1.15rem;
+    }
+}
+
+/* Large Desktop (1441px - 1920px) */
+@media screen and (min-width: 1441px) and (max-width: 1920px) {
+    .container {
+        padding: 40px;
+        max-width: 1400px;
+    }
+    
+    .glitch {
+        font-size: 3.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.35rem;
+    }
+    
+    .terminal {
+        padding: 35px;
+        margin: 35px 0;
+    }
+    
+    .terminal-header {
+        font-size: 1.2rem;
+    }
+    
+    .social-links a {
+        font-size: 1.3rem;
+    }
+}
+
+/* Ultra-wide/4K Screens (1921px+) */
+@media screen and (min-width: 1921px) {
+    .container {
+        padding: 50px;
+        max-width: 1600px;
+    }
+    
+    .glitch {
+        font-size: 4rem;
+    }
+    
+    .subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .terminal {
+        padding: 40px;
+        margin: 40px 0;
+        border-radius: 15px;
+    }
+    
+    .terminal-header {
+        font-size: 1.3rem;
+    }
+    
+    .social-links a {
+        font-size: 1.4rem;
+        margin: 0 20px;
+    }
+    
+    .footer {
+        margin-top: 60px;
+        padding: 30px;
+    }
+}
+
+/* Portrait Orientation Adjustments */
+@media screen and (orientation: portrait) {
+    .header {
+        margin-bottom: 30px;
+    }
+    
+    .terminal {
+        margin: 15px 0;
+    }
+    
+    .social-links a {
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+}
+
+/* Landscape Orientation Adjustments */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .header {
+        margin-bottom: 20px;
+    }
+    
     .glitch {
         font-size: 2rem;
     }
     
-    .skills-grid {
-        grid-template-columns: 1fr;
+    .subtitle {
+        font-size: 1rem;
     }
     
-    .container {
-        padding: 10px;
+    .terminal {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .footer {
+        margin-top: 30px;
+        padding: 15px;
+    }
+}
+
+/* High DPI/Retina Display Adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .glitch {
+        text-shadow: 0 0 15px #00ff00;
+    }
+    
+    .terminal {
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.25);
+    }
+    
+    .social-links a:hover {
+        text-shadow: 0 0 8px #00ccff;
+    }
+}
+
+/* Accessibility - Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+    .glitch {
+        animation: none;
+    }
+    
+    .subtitle {
+        animation: none;
+        border-right: none;
+        white-space: normal;
+    }
+    
+    .social-links a {
+        transition: none;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    /* Already using dark theme, but you can add variations here */
+    .terminal {
+        background: rgba(0, 30, 0, 0.95);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .matrix-bg {
+        display: none;
+    }
+    
+    .terminal {
+        background: white;
+        color: black;
+        border: 1px solid black;
+        box-shadow: none;
+    }
+    
+    .glitch {
+        color: black;
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .subtitle {
+        color: black;
+        animation: none;
+        border-right: none;
+    }
+    
+    .social-links a {
+        color: black;
     }
 }
