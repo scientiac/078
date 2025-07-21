@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  background: #0f0f1a;
+  color: #00ffea;
+  font-family: "Share Tech Mono", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.terminal-box {
+  background: rgba(10, 10, 20, 0.85);
+  border: 2px solid #00fff7;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px #00fff7, inset 0 0 15px #00fff7;
+  max-width: 600px;
+  text-align: center;
+}
+
+h1 a {
+  color: #00ffea;
+  text-decoration: none;
+  text-shadow: 0 0 10px #00fff7;
+  transition: color 0.3s ease;
+}
+
+h1 a:hover {
+  color: #00ffd5;
+}
+
+.typing-effect {
+  border-right: 2px solid #00fff7;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 5s steps(50, end), blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #00fff7;
+  }
+}
+
+.quote {
+  margin-top: 30px;
+  font-size: 1.1rem;
+  color: #00ffd5;
+  text-shadow: 0 0 8px #00fff7;
+}
+
+.status-panel {
+  margin-top: 25px;
+  background: rgba(0, 255, 247, 0.1);
+  border: 1px solid #00fff7;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #00fff7;
+  text-shadow: 0 0 5px #00fff7;
+}
+
+.footer {
+  color: #00ffea;
+  opacity: 0.5;
+  margin-top: 20px;
+  font-size: 0.8rem;
+}
