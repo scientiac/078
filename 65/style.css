@@ -48,7 +48,7 @@ h1 a:hover {
     width: 0;
   }
   to {
-    width: 34ch; /* Approximate characters to be typed */
+    width: 35ch; /* Approximate characters to be typed */
   }
 }
 
@@ -99,7 +99,7 @@ h1 a:hover {
       width: 0;
     }
     to {
-      width: 34ch;
+      width: 35ch;
     }
   }
 
@@ -127,7 +127,7 @@ h1 a:hover {
       width: 0;
     }
     to {
-      width: 34ch;
+      width: 35ch;
     }
   }
 
