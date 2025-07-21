@@ -13,11 +13,11 @@ body {
 .terminal-box {
   background: rgba(10, 10, 20, 0.85);
   border: 2px solid #00fff7;
-  padding: 30px;
+  padding: 4px 30px;
   border-radius: 15px;
   box-shadow: 0 0 25px #00fff7, inset 0 0 15px #00fff7;
   max-width: 600px;
-  text-align: center;
+  text-align: start;
 }
 
 h1 a {
@@ -31,19 +31,24 @@ h1 a:hover {
   color: #00ffd5;
 }
 
+/* Typing Effect with Real Width */
 .typing-effect {
+  display: inline-block;
+  font-size: 1.2rem;
   border-right: 2px solid #00fff7;
   white-space: nowrap;
   overflow: hidden;
-  animation: typing 5s steps(50, end), blink 0.7s step-end infinite;
+  width: 0;
+  animation: typing 3s steps(30, end) forwards, blink 0.7s step-end infinite;
 }
 
+/* Adjust width in characters (approximate text length) */
 @keyframes typing {
   from {
     width: 0;
   }
   to {
-    width: 100%;
+    width: 35ch; /* Approximate characters to be typed */
   }
 }
 
@@ -80,4 +85,61 @@ h1 a:hover {
   opacity: 0.5;
   margin-top: 20px;
   font-size: 0.8rem;
+}
+
+/* Responsive Scaling Without Margins or Padding */
+@media (max-width: 768px) {
+  .typing-effect {
+    font-size: 1rem;
+    animation: typing-small 3s steps(30, end) forwards, blink 0.7s step-end infinite;
+  }
+
+  @keyframes typing-small {
+    from {
+      width: 0;
+    }
+    to {
+      width: 35ch;
+    }
+  }
+
+  .quote {
+    font-size: 1rem;
+  }
+
+  .status-panel {
+    font-size: 0.8rem;
+  }
+
+  .footer {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-effect {
+    font-size: 0.85rem;
+    animation: typing-xsmall 3s steps(30, end) forwards, blink 0.7s step-end infinite;
+  }
+
+  @keyframes typing-xsmall {
+    from {
+      width: 0;
+    }
+    to {
+      width: 35ch;
+    }
+  }
+
+  .quote {
+    font-size: 0.85rem;
+  }
+
+  .status-panel {
+    font-size: 0.75rem;
+  }
+
+  .footer {
+    font-size: 0.65rem;
+  }
 }
