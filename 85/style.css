@@ -179,21 +179,17 @@ section h3 {
   .skills {
     justify-content: center;
   }
-  .role{
-    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+
+  .role {
+    animation: typing600 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
   }
-  @keyframes typing {
-  0% {
-    width: 0;
-  }
-  50% {
-    width: 28ch; 
-  }
-  100% {
-    width: 0; 
+
+  @keyframes typing600 {
+    0% { width: 0; }
+    50% { width: 28ch; }
+    100% { width: 0; }
   }
 }
-
 
 @media (max-width: 500px) {
   .card {
@@ -203,68 +199,53 @@ section h3 {
   .skills {
     justify-content: center;
   }
-  .role{
-    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+
+  .role {
+    animation: typing500 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
   }
-  @keyframes typing {
-  0% {
-    width: 0;
-  }
-  50% {
-    width: 26ch; 
-  }
-  100% {
-    width: 0; 
+
+  @keyframes typing500 {
+    0% { width: 0; }
+    50% { width: 26ch; }
+    100% { width: 0; }
   }
 }
-
-
-
 
 @media (max-width: 450px) {
   .name {
     font-size: 1.2rem;
+  }
 
-  }
-  .role{
+  .role {
     font-size: 0.9rem;
-    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+    animation: typing450 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
   }
-  @keyframes typing {
-  0% {
-    width: 0;
-  }
-  50% {
-    width: 26ch; 
-  }
-  100% {
-    width: 0; 
+
+  @keyframes typing450 {
+    0% { width: 0; }
+    50% { width: 26ch; }
+    100% { width: 0; }
   }
 }
 
-
-
-
 @media (max-width: 350px) {
-
-  body{
+  body {
     height: 130vh;
   }
-  .name {
-    font-size: 1rem;
-   
 
+  .name {
+    font-size: 1.1rem;
   }
+
   .role {
     font-size: 0.8rem;
     animation: none;
     border: none;
     width: auto;
-
+    white-space: normal;
   }
 
-  .about{
-    font-size:1rem;
+  .about {
+    font-size: 1rem;
   }
 }
-
