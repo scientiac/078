@@ -9,7 +9,7 @@
 body {
   font-family: 'Montserrat', sans-serif;
   background: linear-gradient(135deg, #1a1a1d, #0f2027);
-  height: 90vh;
+  height: 110vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,6 +50,11 @@ body {
   color: #00fff7;
   margin-bottom: 10px;
   letter-spacing: 1px;
+ 
+  word-break: break-word;
+  white-space: normal; 
+
+
 }
 
 
@@ -73,7 +78,7 @@ body {
     width: 0;
   }
   50% {
-    width: 33ch; 
+    width: 30ch; 
   }
   100% {
     width: 0; 
@@ -174,8 +179,92 @@ section h3 {
   .skills {
     justify-content: center;
   }
-
-  .social-links {
-    justify-content: center;
+  .role{
+    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+  }
+  @keyframes typing {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 28ch; 
+  }
+  100% {
+    width: 0; 
   }
 }
+
+
+@media (max-width: 500px) {
+  .card {
+    padding: 30px 25px;
+  }
+
+  .skills {
+    justify-content: center;
+  }
+  .role{
+    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+  }
+  @keyframes typing {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 26ch; 
+  }
+  100% {
+    width: 0; 
+  }
+}
+
+
+
+
+@media (max-width: 450px) {
+  .name {
+    font-size: 1.2rem;
+
+  }
+  .role{
+    font-size: 0.9rem;
+    animation: typing 7s steps(20) infinite alternate, blink 0.8s step-end infinite;
+  }
+  @keyframes typing {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 26ch; 
+  }
+  100% {
+    width: 0; 
+  }
+}
+
+
+
+
+@media (max-width: 350px) {
+
+  body{
+    height: 130vh;
+  }
+  .name {
+    font-size: 1rem;
+   
+
+  }
+  .role {
+    font-size: 0.8rem;
+    animation: none;
+    border: none;
+    width: auto;
+
+  }
+
+  .about{
+    font-size:1rem;
+  }
+}
+
