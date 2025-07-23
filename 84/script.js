@@ -191,11 +191,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-const explosionSound = document.getElementById("explosion-sound");
 document.addEventListener("DOMContentLoaded", () => {
-  explosionSound.volume = 0.3; // adjust volume
-  explosionSound.play().catch(err => {
-    console.warn("Autoplay failed due to browser policy.");
+  const explosionSound = document.getElementById("explosion-sound");
+  const rocket = document.getElementById("rocket");
+
+  explosionSound.volume = 0.3;
+
+  rocket.addEventListener("click", () => {
+    rocket.disabled = true;
+
+    setTimeout(() => {
+      explosionSound.currentTime = 0;
+      explosionSound.play().catch(err => {
+        console.warn("Sound play failed:", err);
+      });
+      rocket.disabled = false;
+    }, 2500);
   });
 });
 
