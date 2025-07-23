@@ -172,24 +172,18 @@ window.addEventListener('resize', () => {
 document.addEventListener("DOMContentLoaded", () => {
   const bgMusic = document.getElementById("bg-music");
   const toggleBtn = document.getElementById("sound-toggle");
+
   bgMusic.volume = 0.3;
+  toggleBtn.textContent = "🔇"; // default muted icon
 
-  function playMusic() {
-    bgMusic.play().catch(err => {
-      console.warn("Autoplay blocked:", err);
-    });
-    window.removeEventListener("click", playMusic);
-    window.removeEventListener("touchstart", playMusic);
-  }
-
-  window.addEventListener("click", playMusic);
-  window.addEventListener("touchstart", playMusic);
-
-  // Toggle music
+  // Toggle music only through the button
   toggleBtn.addEventListener("click", () => {
     if (bgMusic.paused) {
-      bgMusic.play();
-      toggleBtn.textContent = "🔊";
+      bgMusic.play().then(() => {
+        toggleBtn.textContent = "🔊";
+      }).catch(err => {
+        console.warn("Autoplay blocked:", err);
+      });
     } else {
       bgMusic.pause();
       toggleBtn.textContent = "🔇";
