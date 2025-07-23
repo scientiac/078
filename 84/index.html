@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sonu Gupta | Personal Art Page</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="bg-canvas"></div>
+  <div class="cursor"><img src="red_star.png" alt="star" /></div>
+
+  <div class="container">
+    <header>
+      <h1 class="animated-title">Namaste, I'm <span>Sonu</span></h1>
+      <p>Senior at IOE | SaaS Developer | AI/ML Enthusiast | MERN Dev | Blender Stuffs</p>
+    </header>
+
+    <div class="cards-row">
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h2>Creating awesome shits with constant learning</h2>
+          </div>
+          <div class="flip-card-back">
+            <p>It's a trap ! This guy doesn't even know how to center a div</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="crash-zone" id="rocket-target">
+        <h2>Crash Zone</h2>
+        <br>
+        <p>Look out for stuffs you can crash</p>
+        <div id="explosion">👽</div>
+        <p id="secret-message" class="hidden-message"></p>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h2>Always there to help you out</h2>
+          </div>
+          <div class="flip-card-back">
+            <p>Why don't you use AI instead of asking for help. This man does the same btw :)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rocket-launch">
+      <img id="rocket" src="rocket.png" alt="Rocket" />
+    </div>
+
+    <footer>
+      <div class="socials">
+        <a href="https://www.facebook.com/sakxam.gupta.92" class="icon facebook" target="_blank" title="Facebook">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" />
+        </a>
+        <a href="https://www.instagram.com/___gupta___sonu/" class="icon instagram" target="_blank" title="Instagram">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" />
+        </a>
+        <a href="https://github.com/creationsbysonu" class="icon github" target="_blank" title="GitHub">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub" />
+        </a>
+        <a href="https://www.linkedin.com/in/sonu-gupta-681329340/" class="icon linkedin" target="_blank" title="LinkedIn">
+          <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" />
+        </a>
+        <a href="https://guptasonu.com.np/" class="icon portfolio" target="_blank" title="Portfolio">
+          <img src="user_png.png" alt="Portfolio" />
+        </a>
+      </div>
+      <div class="credits">
+        <button id="sound-toggle" title="Toggle Sound">🔊</button>
+        <p>Created with a cup of ☕️ | by Sonu Gupta</p>
+      </div>
+    </footer>
+  </div>
+  <div class="shuttle-container">
+    <button id="ignite-button">Ignite 🚀</button>
+    <img id="space-shuttle" src="rocket3.png" alt="Space Shuttle" />
+    <div id="shuttle-message">CODE COFFEE REPEAT !</div>
+  </div>
+
+  <audio id="explosion-sound" src="explosion1.wav"></audio>
+  <audio id="bg-music" src="background_music.mp3" loop></audio>
+
+</body>
+</html>
