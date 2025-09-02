@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Confused Mind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* A retro, slightly patterned background */
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #1a1a1a;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        /* The main container for all the notes */
+        #desktop {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Styling for the draggable notes */
+        .note {
+            position: absolute;
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            cursor: grab;
+            user-select: none; /* Prevent text selection while dragging */
+            min-width: 200px;
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+            z-index: 10;
+        }
+        
+        /* Style for when a note is being dragged */
+        .note.dragging {
+            cursor: grabbing;
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.7);
+            z-index: 1000; /* Bring to front */
+            transform: scale(1.05) !important; /* Override initial transform */
+        }
+
+        /* Header for each note */
+        .note-header {
+            font-weight: bold;
+            color: #00ff41;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #444;
+        }
+        
+        /* Specific styles for different notes */
+        #name-note {
+            top: 20%;
+            left: 40%;
+            transform: rotate(-3deg);
+            font-size: 1.2rem;
+        }
+        
+        #about-note {
+            top: 45%;
+            left: 60%;
+            transform: rotate(2deg);
+        }
+        
+        #status-note {
+            top: 80%;
+            left: 15%;
+            transform: rotate(5deg);
+        }
+
+        #emoji-note {
+            top: 15%;
+            left: 75%;
+            transform: rotate(-4deg);
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        #question-note {
+            top: 70%;
+            left: 80%;
+            transform: rotate(3deg);
+            font-size: 3rem;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        #education-note {
+            top: 40%;
+            left: 10%;
+            transform: rotate(4deg);
+        }
+        
+        #skills-note {
+            top: 70%;
+            left: 45%;
+            transform: rotate(-2deg);
+        }
+
+        /* --- EDITED CSS FOR PHOTO --- */
+        #photo-note {
+            top: 10%;
+            left: 10%;
+            transform: rotate(2deg);
+            width: 150px;
+            height: 150px;
+            min-width: 150px;
+            border-radius: 50%; /* Makes the container round */
+            border: 3px solid #666;
+            padding: 0; /* Remove padding to let the image fill the space */
+            overflow: hidden; /* This is the key: it clips the image to the container's shape */
+        }
+
+        #photo-note img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Ensures the image is round */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="desktop">
+        <!-- Draggable Note for the Photo -->
+        <!-- Replace the src with the path to your image -->
+        <div id="photo-note" class="note draggable">
+            <img src="images/pic.png" 
+                 alt="Ram Chandra Ghimire photo" 
+            />
+        </div>
+
+        <!-- Draggable Note for the Name -->
+        <div id="name-note" class="note draggable">
+            <div class="note-header">[ identity_file.log ]</div>
+            <p>NAME: Ram Chandra Ghimire</p>
+        </div>
+
+        <!-- Draggable Note for Education -->
+        <div id="education-note" class="note draggable">
+            <div class="note-header">[ education.info ]</div>
+            <p>Bachelor in Computer Engineering</p>
+        </div>
+
+        <!-- Draggable Note for Skills -->
+        <div id="skills-note" class="note draggable">
+            <div class="note-header">[ skills.list ]</div>
+            <p>Skill: NULL</p>
+        </div>
+
+        <!-- Draggable Note for the About Me -->
+        <div id="about-note" class="note draggable">
+            <div class="note-header">[ personal_log.txt ]</div>
+            <p>I know nothing...<br>always in trouble...<br>constantly confused...<br>and hopelessly diverted.</p>
+        </div>
+
+    
+
+        <!-- Draggable Note for Emojis -->
+        <div id="emoji-note" class="note draggable">
+            <div class="note-header">[ feelings.dat ]</div>
+            <p>😵‍💫 🤔 😥 </p>
+        </div>
+        
+        <!-- Draggable Note for a big question mark -->
+        <div id="question-note" class="note draggable">
+            <p>?</p>
+        </div>
+    </div>
+
+    <script>
+        // --- SCRIPT LOGIC FOR DRAGGABLE NOTES ---
+        const notes = document.querySelectorAll('.draggable');
+        let activeNote = null;
+        let offsetX, offsetY;
+
+        // Function to handle the start of dragging
+        function dragStart(e) {
+            // Bring the active note to the front
+            notes.forEach(note => note.style.zIndex = '10');
+            this.style.zIndex = '1000';
+            
+            activeNote = this;
+            activeNote.classList.add('dragging');
+
+            // Check if it's a touch event or mouse event
+            const event = e.type === 'touchstart' ? e.touches[0] : e;
+
+            // Calculate the offset from the top-left corner of the note
+            offsetX = event.clientX - activeNote.getBoundingClientRect().left;
+            offsetY = event.clientY - activeNote.getBoundingClientRect().top;
+        }
+
+        // Function to handle the dragging movement
+        function drag(e) {
+            if (!activeNote) return;
+            e.preventDefault(); // Prevent default behavior (like scrolling on touch)
+
+            const event = e.type === 'touchmove' ? e.touches[0] : e;
+            
+            // Calculate new position
+            let newX = event.clientX - offsetX;
+            let newY = event.clientY - offsetY;
+            
+            // Set the note's new position
+            activeNote.style.left = `${newX}px`;
+            activeNote.style.top = `${newY}px`;
+        }
+
+        // Function to handle the end of dragging
+        function dragEnd() {
+            if (!activeNote) return;
+            activeNote.classList.remove('dragging');
+            activeNote = null;
+        }
+
+        // Add event listeners to each note
+        notes.forEach(note => {
+            // Mouse events
+            note.addEventListener('mousedown', dragStart);
+            
+            // Touch events for mobile
+            note.addEventListener('touchstart', dragStart);
+        });
+        
+        // Add listeners to the whole document to handle movement and release
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', dragEnd);
+
+    </script>
+</body>
+</html>
