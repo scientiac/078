@@ -2,7 +2,7 @@
 
 A shared digital canvas for students of BCT 2078 to showcase individual creative works. Each contributor owns a fixed canvas area identified by their roll number and is free to design within that space using HTML, CSS, JavaScript, and other web assets.
 
-Live canvas: [https://pur078bct.spandanguragain.com.np](https://pur078bct.spandanguragain.com.np)
+Live canvas: [PUR078BCT](https://pur078bct.spandanguragain.com.np)
 
 ---
 
