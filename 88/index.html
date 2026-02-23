@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>~/portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="window" id="window">
+  <div class="titlebar">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+    <span class="titlebar-label" id="titlebar-label">user — ~/</span>
+  </div>
+
+  <div class="output" id="output"></div>
+
+  <div class="input-row">
+    <span class="prompt-label">
+      <span class="prompt-user">user</span><span
+        class="prompt-sep">:</span><span
+        class="prompt-path" id="prompt-path">~</span><span
+        class="prompt-sign">$</span>
+    </span>
+    <input id="cmd-input" type="text" autocomplete="off" spellcheck="false" />
+  </div>
+</div>
+
+<!-- ============================================================
+     CONFIGURATION — edit freely
+============================================================ -->
+<script>
+const WELCOME = String.raw`
+ ____  _   _  ____  _____ ____  _   _
+/ ___|| | | ||  _ \| ____/ ___|| | | |
+\___ \| | | || | | |  _| \___ \| |_| |
+ ___) | |_| || |_| | |___ ___) |  _  |
+|____/ \___/ |____/|_____|____/|_| |_|
+ ____  _   _  ____  _____ ____  ___
+/ ___|| | | || __ )| ____|  _ \|_ _|
+\___ \| | | ||  _ \|  _| | | || | |
+ ___) | |_| || |_) | |___| |_|| | |
+|____/ \___/ |____/|_____|____/|___|`.trimEnd();
+
+const WELCOME_SUBTITLE =
+  "Hii! — type <span class='c-green'>help</span> to get started";
+</script>
+
+<!-- ============================================================
+     MARKDOWN RENDERER
+     Supports: # headings, > blockquote, - lists, ``` code blocks,
+               **bold**, *italic*, `inline code`, [links](url), ---
+============================================================ -->
+<script>
+/**
+ * renderMarkdown(md) → DocumentFragment
+ *
+ * Converts a subset of Markdown into DOM nodes styled for the terminal.
+ * Returns a DocumentFragment so callers can append it anywhere.
+ *
+ * Supported block elements (one per line / fenced):
+ *   # H1  ## H2  ### H3
+ *   > blockquote
+ *   - list item  (or * or +)
+ *   ```[lang]\n...\n```  fenced code block
+ *   ---  horizontal rule
+ *   (anything else) paragraph
+ *
+ * Supported inline elements (within paragraphs / list items / blockquotes):
+ *   **bold**  *italic*  `code`  [text](url)
+ */
+function renderMarkdown(md) {
+  const frag = document.createDocumentFragment();
+  const wrap = document.createElement("div");
+  wrap.className = "md-output";
+
+  const lines = md.split("\n");
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // ── Fenced code block ────────────────────────────────────
+    if (line.trimStart().startsWith("```")) {
+      const pre = document.createElement("div");
+      pre.className = "md-pre";
+      const code = document.createElement("span");
+      code.className = "md-code-block";
+      i++; // skip opening fence
+      const codeLines = [];
+      while (i < lines.length && !lines[i].trimStart().startsWith("```")) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      i++; // skip closing fence
+      code.textContent = codeLines.join("\n");
+      pre.appendChild(code);
+      wrap.appendChild(pre);
+      continue;
+    }
+
+    // ── Horizontal rule ──────────────────────────────────────
+    if (/^---+\s*$/.test(line)) {
+      const hr = document.createElement("div");
+      hr.className = "md-hr";
+      wrap.appendChild(hr);
+      i++;
+      continue;
+    }
+
+    // ── Headings ─────────────────────────────────────────────
+    const hMatch = line.match(/^(#{1,3})\s+(.+)/);
+    if (hMatch) {
+      const level = hMatch[1].length;
+      const el = document.createElement("div");
+      el.className = `md-h${level}`;
+      el.appendChild(inlineMarkdown(hMatch[2]));
+      wrap.appendChild(el);
+      i++;
+      continue;
+    }
+
+    // ── Blockquote ───────────────────────────────────────────
+    if (/^>\s?/.test(line)) {
+      const bq = document.createElement("div");
+      bq.className = "md-blockquote";
+      bq.appendChild(inlineMarkdown(line.replace(/^>\s?/, "")));
+      wrap.appendChild(bq);
+      i++;
+      continue;
+    }
+
+    // ── Unordered list ───────────────────────────────────────
+    if (/^[\-\*\+]\s/.test(line)) {
+      const ul = document.createElement("div");
+      ul.className = "md-ul";
+      while (i < lines.length && /^[\-\*\+]\s/.test(lines[i])) {
+        const li = document.createElement("div");
+        li.className = "md-li";
+        const bullet = document.createElement("span");
+        bullet.className = "md-li-bullet";
+        bullet.textContent = "·";
+        const content = document.createElement("span");
+        content.appendChild(inlineMarkdown(lines[i].replace(/^[\-\*\+]\s/, "")));
+        li.appendChild(bullet);
+        li.appendChild(content);
+        ul.appendChild(li);
+        i++;
+      }
+      wrap.appendChild(ul);
+      continue;
+    }
+
+    // ── Blank line ───────────────────────────────────────────
+    if (line.trim() === "") {
+      i++;
+      continue;
+    }
+
+    // ── Paragraph ────────────────────────────────────────────
+    const p = document.createElement("div");
+    p.className = "md-p";
+    p.appendChild(inlineMarkdown(line));
+    wrap.appendChild(p);
+    i++;
+  }
+
+  frag.appendChild(wrap);
+  return frag;
+}
+
+/**
+ * inlineMarkdown(text) → DocumentFragment
+ * Renders **bold**, *italic*, `code`, [text](url) within a line.
+ */
+function inlineMarkdown(text) {
+  const frag = document.createDocumentFragment();
+
+  // Token pattern — order matters
+  const TOKEN = /(\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`|\[([^\]]+)\]\(([^)]+)\))/g;
+  let last = 0;
+  let m;
+
+  while ((m = TOKEN.exec(text)) !== null) {
+    // plain text before this token
+    if (m.index > last) {
+      frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+    }
+
+    if (m[2] !== undefined) {               // **bold**
+      const el = document.createElement("strong");
+      el.textContent = m[2];
+      frag.appendChild(el);
+    } else if (m[3] !== undefined) {        // *italic*
+      const el = document.createElement("em");
+      el.textContent = m[3];
+      frag.appendChild(el);
+    } else if (m[4] !== undefined) {        // `code`
+      const el = document.createElement("span");
+      el.className = "md-inline-code";
+      el.textContent = m[4];
+      frag.appendChild(el);
+    } else if (m[5] !== undefined) {        // [text](url)
+      const el = document.createElement("a");
+      el.href = m[6];
+      el.textContent = m[5];
+      el.target = "_blank";
+      el.rel = "noopener";
+      frag.appendChild(el);
+    }
+
+    last = m.index + m[0].length;
+  }
+
+  // remaining plain text
+  if (last < text.length) {
+    frag.appendChild(document.createTextNode(text.slice(last)));
+  }
+
+  return frag;
+}
+</script>
+
+<!-- ============================================================
+     TERMINAL ENGINE
+============================================================ -->
+<script>
+// ── DOM refs ────────────────────────────────────────────────────────────────
+const outEl      = document.getElementById("output");
+const inpEl      = document.getElementById("cmd-input");
+const pathEl     = document.getElementById("prompt-path");
+const titlebarEl = document.getElementById("titlebar-label");
+
+// ── State ────────────────────────────────────────────────────────────────────
+let FS      = null;
+let cwd     = [];
+let history = [];
+let histIdx = -1;
+
+// ── Filesystem helpers ───────────────────────────────────────────────────────
+function fsAt(pathArr) {
+  let node = FS;
+  for (const seg of pathArr) {
+    if (!node || node.type !== "dir" || !node.children[seg]) return null;
+    node = node.children[seg];
+  }
+  return node;
+}
+
+function resolvePath(raw) {
+  if (!raw || raw === "~") return [];
+  const parts  = raw.split("/").filter(Boolean);
+  const result = (raw.startsWith("/") || raw.startsWith("~")) ? [] : [...cwd];
+  for (const p of parts) {
+    if (p === "..") { if (result.length) result.pop(); }
+    else if (p !== ".") result.push(p);
+  }
+  return result;
+}
+
+function displayPath() {
+  return cwd.length ? `~/${cwd.join("/")}` : "~";
+}
+
+function syncPrompt() {
+  const p = displayPath();
+  pathEl.textContent = p;
+  titlebarEl.textContent = `user — ${p}`;
+}
+
+// ── DOM helpers ──────────────────────────────────────────────────────────────
+function addLine(html, cls = "") {
+  const div = document.createElement("div");
+  div.className = `line ${cls}`.trim();
+  div.innerHTML = html;
+  outEl.appendChild(div);
+  return div;
+}
+
+function blank() {
+  const d = document.createElement("div");
+  d.className = "line-blank";
+  outEl.appendChild(d);
+}
+
+function scrollDown() { outEl.scrollTop = outEl.scrollHeight; }
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
+
+function echoCmd(cmd) {
+  addLine(
+    `<span class="prompt-user">user</span>` +
+    `<span class="c-muted">:</span>` +
+    `<span class="c-yellow">${esc(displayPath())}</span>` +
+    `<span class="c-green">$</span> ${esc(cmd)}`,
+    "line-cmd"
+  );
+}
+
+// ── Commands ─────────────────────────────────────────────────────────────────
+const COMMANDS = {
+
+  help() {
+    blank();
+    addLine("<span class='c-green c-bold'>Available commands</span>");
+    blank();
+    const rows = [
+      ["help",        "Show this message"],
+      ["ls [path]",   "List directory contents"],
+      ["cd [path]",   "Change directory  (.. or ~ supported)"],
+      ["cat <file>",  "Render a markdown file"],
+      ["open <file>", "Open the link attached to a file"],
+      ["pwd",         "Print working directory"],
+      ["clear",       "Clear the terminal"],
+      ["whoami",      "One-line bio from about.md"],
+    ];
+    for (const [cmd, desc] of rows) {
+      addLine(
+        `  <span class='c-yellow'>${esc(cmd).padEnd(16)}</span>` +
+        `<span class='c-muted'>${esc(desc)}</span>`
+      );
+    }
+    blank();
+    addLine(
+      `<span class='c-muted'>` +
+      `<span class='c-purple'>↑ ↓</span> history &nbsp;·&nbsp; ` +
+      `<span class='c-purple'>Tab</span> autocomplete` +
+      `</span>`
+    );
+    blank();
+  },
+
+  ls(args) {
+    const target = args[0] ? resolvePath(args[0]) : [...cwd];
+    const node   = fsAt(target);
+
+    if (!node) {
+      addLine(`<span class='c-red'>ls: ${esc(args[0])}: No such file or directory</span>`);
+      return;
+    }
+    if (node.type === "file") {
+      addLine(`<span class='c-muted'>${esc(args[0])}</span>`);
+      return;
+    }
+
+    const items = Object.entries(node.children);
+    if (!items.length) { addLine(`<span class='c-muted'>(empty)</span>`); return; }
+
+    blank();
+    const grid = document.createElement("div");
+    grid.className = "ls-grid line";
+
+    for (const [name, child] of items.sort(([a],[b]) => a.localeCompare(b))) {
+      const span = document.createElement("span");
+      span.className = "ls-item";
+      if (child.type === "dir") {
+        span.innerHTML =
+          `<span class='icon c-muted'>▸</span>` +
+          `<span class='c-blue c-bold'>${esc(name)}/</span>`;
+      } else {
+        const linked = !!child.link;
+        span.innerHTML =
+          `<span class='icon c-muted'>·</span>` +
+          `<span class='${linked ? "c-green" : "c-text"}'>${esc(name)}</span>` +
+          (linked ? `<span class='c-muted' style='font-size:10px'> ⎘</span>` : "");
+      }
+      grid.appendChild(span);
+    }
+
+    outEl.appendChild(grid);
+    blank();
+    // addLine(
+    //   `<span class='c-muted'>${items.length} item${items.length !== 1 ? "s" : ""}` +
+    //   ` — <span class='c-green'>green ⎘</span> = has link (use <span class='c-yellow'>open</span>)</span>`
+    // );
+    blank();
+  },
+
+  cd(args) {
+    const target = resolvePath(args[0] || "~");
+    const node   = fsAt(target);
+    if (!node) {
+      addLine(`<span class='c-red'>cd: ${esc(args[0])}: No such directory</span>`);
+      return;
+    }
+    if (node.type === "file") {
+      addLine(`<span class='c-red'>cd: ${esc(args[0])}: Not a directory</span>`);
+      return;
+    }
+    cwd = target;
+    syncPrompt();
+  },
+
+  cat(args) {
+    if (!args[0]) { addLine("<span class='c-red'>cat: missing operand</span>"); return; }
+
+    const target = resolvePath(args[0]);
+    const node   = fsAt(target);
+
+    if (!node) {
+      addLine(`<span class='c-red'>cat: ${esc(args[0])}: No such file</span>`);
+      return;
+    }
+    if (node.type === "dir") {
+      addLine(
+        `<span class='c-red'>cat: ${esc(args[0])}: Is a directory` +
+        ` — try <span class='c-yellow'>ls</span></span>`
+      );
+      return;
+    }
+
+    blank();
+    outEl.appendChild(renderMarkdown(node.content));
+
+    if (node.link) {
+      blank();
+      addLine(
+        `<span class='c-muted'>Has link — run ` +
+        `<span class='c-yellow'>open ${esc(args[0])}</span> to visit.</span>`
+      );
+    }
+    blank();
+  },
+
+  open(args) {
+    if (!args[0]) { addLine("<span class='c-red'>open: missing operand</span>"); return; }
+
+    const target = resolvePath(args[0]);
+    const node   = fsAt(target);
+
+    if (!node)              { addLine(`<span class='c-red'>open: ${esc(args[0])}: No such file</span>`); return; }
+    if (node.type === "dir") { addLine(`<span class='c-red'>open: ${esc(args[0])}: Is a directory</span>`); return; }
+    if (!node.link)          { addLine(`<span class='c-red'>open: ${esc(args[0])}: No link associated with this file</span>`); return; }
+
+    addLine(`<span class='c-green'>Opening</span> <span class='c-blue'>${esc(node.link)}</span> …`);
+    window.open(node.link, "_blank", "noopener");
+  },
+
+  pwd() {
+    addLine(`<span class='c-yellow'>${esc(displayPath())}</span>`);
+  },
+
+  clear() {
+    outEl.innerHTML = "";
+  },
+
+  whoami() {
+    const about = FS?.children?.["about.md"];
+    if (!about) { addLine("<span class='c-muted'>about.md not found</span>"); return; }
+    // Pull first heading and first paragraph from the markdown
+    const h1Line = about.content.split("\n").find(l => l.startsWith("# "));
+    const paraLine = about.content.split("\n").find(l => l.trim() && !l.startsWith("#"));
+    const name = h1Line ? h1Line.replace(/^#\s+/, "") : "";
+    const bio  = paraLine || "";
+    addLine(
+      `<span class='c-green c-bold'>${esc(name)}</span>` +
+      (bio ? ` — <span class='c-muted'>${esc(bio)}</span>` : "")
+    );
+  },
+};
+
+// ── Runner ───────────────────────────────────────────────────────────────────
+function run(raw) {
+  const trimmed = raw.trim();
+  if (!trimmed) return;
+  history.unshift(trimmed);
+  histIdx = -1;
+  echoCmd(trimmed);
+
+  if (!FS) {
+    addLine("<span class='c-red'>Filesystem not loaded yet.</span>");
+    scrollDown();
+    return;
+  }
+
+  const [cmd, ...args] = trimmed.split(/\s+/);
+  const handler = COMMANDS[cmd.toLowerCase()];
+  if (handler) handler(args);
+  else addLine(
+    `<span class='c-red'>${esc(cmd)}: command not found</span>` +
+    ` — type <span class='c-green'>help</span>`
+  );
+
+  scrollDown();
+}
+
+// ── Input events ─────────────────────────────────────────────────────────────
+inpEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const v = inpEl.value;
+    inpEl.value = "";
+    run(v);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    if (histIdx < history.length - 1) inpEl.value = history[++histIdx];
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault();
+    if (histIdx > 0) inpEl.value = history[--histIdx];
+    else { histIdx = -1; inpEl.value = ""; }
+  } else if (e.key === "Tab") {
+    e.preventDefault();
+    autocomplete();
+  }
+});
+
+document.getElementById("window").addEventListener("click", () => inpEl.focus());
+
+// ── Tab autocomplete ─────────────────────────────────────────────────────────
+function autocomplete() {
+  if (!FS) return;
+  const parts   = inpEl.value.split(/\s+/);
+  if (parts.length < 2) return;
+  const partial = parts[parts.length - 1];
+  const dirPart = partial.includes("/") ? partial.split("/").slice(0,-1).join("/") : "";
+  const stem    = partial.includes("/") ? partial.split("/").pop() : partial;
+  const dir     = fsAt(dirPart ? resolvePath(dirPart) : [...cwd]);
+  if (!dir || dir.type !== "dir") return;
+
+  const matches = Object.keys(dir.children).filter(k => k.startsWith(stem));
+  if (matches.length === 1) {
+    const suffix = dir.children[matches[0]].type === "dir" ? "/" : "";
+    parts[parts.length-1] = (dirPart ? dirPart + "/" : "") + matches[0] + suffix;
+    inpEl.value = parts.join(" ");
+  } else if (matches.length > 1) {
+    blank();
+    addLine(matches.map(m => `<span class='c-muted'>${esc(m)}</span>`).join("  "));
+    scrollDown();
+  }
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+async function boot() {
+  addLine(`<div class="banner"><pre>${esc(WELCOME)}</pre></div>`);
+  blank();
+  addLine(WELCOME_SUBTITLE);
+  blank();
+  addLine(`<span class='c-muted'>────────────────────────────────────────────────────</span>`);
+  blank();
+  addLine(`<span class='c-muted'>Loading filesystem…</span>`);
+
+  try {
+    const res = await fetch("fs.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    FS = await res.json();
+
+    // Clear and reprint cleanly
+    outEl.innerHTML = "";
+    addLine(`<div class="banner"><pre>${esc(WELCOME)}</pre></div>`);
+    blank();
+    addLine(WELCOME_SUBTITLE);
+    blank();
+    addLine(`<span class='c-muted'>────────────────────────────────────────────────────</span>`);
+    blank();
+
+    run("ls");
+  } catch (err) {
+    // Replace loading line
+    outEl.lastChild?.remove();
+    addLine(`<span class='c-red'>Failed to load fs.json: ${esc(err.message)}</span>`);
+    addLine(
+      `<span class='c-muted'>Run <span class='c-yellow'>node build-fs.js</span> ` +
+      `to generate it from the <span class='c-yellow'>./fs/</span> directory.</span>`
+    );
+    scrollDown();
+  }
+
+  inpEl.focus();
+}
+
+boot();
+</script>
+</body>
+</html>

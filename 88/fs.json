@@ -1,0 +1,23 @@
+{
+  "type": "dir",
+  "children": {
+    "about.md": {
+      "type": "file",
+      "content": "Hi, I'm **sudesh subedi**.\n\nI'm currently a computer engineering student(about to graduate soon).\nHaving said that, I still have no idea where my interest lies. I've narrowed it down\nto a few areas like\n- Algorithm Design\n- Programming Language Theory and Compiler Design\n- Operating Systems\n\nThey are very big fields each having a large numbers of areas within themselves to choose from.\nHopefully I can narrow my interest down to just one before graduating. "
+    },
+    "projects": {
+      "type": "dir",
+      "children": {
+        "3o14.md": {
+          "type": "file",
+          "link": "https://github.com/3o14-com/",
+          "content": "# Decentralized Social Media for Scientific Communication\n\n## **Project Overview**\nStandard social media often feels like it's missing something—especially for scientists and researchers. Sharing complex formulas or academic citations usually ends up as a mess of screenshots or broken text. I worked on a project to fix this: a **federated microblogging platform** built specifically for the scientific community. \n\nBy using the **ActivityPub protocol**, we created a space where academics can host their own data but still stay connected to the \"Fediverse\" (like Mastodon) to share their research with the world.\n\n---\n\n## **Key Features**\n* **Math-Ready Posting**: No more \"x^2\" or messy text. The platform fully supports **LaTeX typesetting** through MathJax, so equations look professional and readable.\n* **Live Rendering**: You can see a live preview of your mathematical formulas as you type, making sure everything is perfect before you hit post.\n* **Your Data, Your Server**: The architecture is decentralized. You can host your own server instance while maintaining full control over your data and interactions.\n* **Fediverse-Friendly**: Even though it's a specialized platform, it’s not an island. You can follow, like, boost, and reply to users on other ActivityPub-compliant services seamlessly.\n* **Flexible Identities**: While each server is designed for a single user, you can create multiple accounts for different roles—like keeping your professional research and personal thoughts separate.\n\n---\n\n### **The Stack**\n* **Backend**: Powered by **Node.js** and **Hono Server** for a lightweight, fast API.\n* **Frontend**: Built with **ReactNative** and **Expo** to provide a smooth, mobile-first experience.\n* **Database & Storage**: **PostgreSQL** for data management and **Minio (S3)** for handling file storage.\n* **Protocols**: **ActivityPub** for federation, **WebFinger** for user discovery, and **OAuth** for secure logins.\n* **DevOps**: Containerized with **Docker** and developed using **Nix** for a reproducible environment.\n"
+        },
+        "overview.md": {
+          "type": "file",
+          "content": "# Projects\n\n## 3o14\nA decentralized social media for scientific communation."
+        }
+      }
+    }
+  }
+}
